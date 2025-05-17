@@ -69,8 +69,8 @@ def login():
         return jsonify({'message': '账户已禁用'}), 403
     
     # 生成JWT令牌
-    access_token = create_access_token(identity=user.id)
-    refresh_token = create_refresh_token(identity=user.id)
+    access_token = create_access_token(identity=str(user.id))
+    refresh_token = create_refresh_token(identity=str(user.id))
     
     return jsonify({
         'message': '登录成功',
@@ -89,7 +89,7 @@ def refresh():
     if not user or not user.is_active:
         return jsonify({'message': '账户不存在或已禁用'}), 403
     
-    access_token = create_access_token(identity=current_user_id)
+    access_token = create_access_token(identity=str(current_user_id))
     
     return jsonify({
         'access_token': access_token

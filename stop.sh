@@ -19,36 +19,24 @@ print_error() {
     echo -e "${RED}[错误]${NC} $1"
 }
 
-# 停止Suricata服务
-stop_suricata() {
-    print_info "停止Suricata服务..."
+# 停止前端服务
+stop_frontend() {
+    print_info "停止前端服务..."
     
-    # 从.env文件加载配置
-    if [ -f "backend/.env" ]; then
-        source <(grep -v '^#' backend/.env | sed -E 's/(.*)=(.*)/export \1="\2"/g')
-    fi
-    
-    # 使用PID文件停止
-    if [ -f "./pids/suricata.pid" ]; then
-        PID=$(cat ./pids/suricata.pid)
-        if ps -p $PID > /dev/null 2>&1; then
-            print_info "停止Suricata进程 PID: $PID"
-            sudo kill $PID
+    if [ -f "backend/frontend.pid" ]; then
+        PID=$(cat backend/frontend.pid)
+        if ps -p $PID > /dev/null; then
+            kill $PID
+            print_info "前端服务已停止 (PID: $PID)"
+        else
+            print_warn "前端服务PID文件存在，但进程未运行"
         fi
-        rm -f ./pids/suricata.pid
-    fi
-    
-    # 检查是否还有运行的Suricata进程
-    if pgrep -f "suricata" > /dev/null; then
-        print_warn "Suricata进程仍在运行，尝试强制终止..."
-        sudo pkill -9 -f "suricata"
-    fi
-    
-    # 确认停止状态
-    if ! pgrep -f "suricata" > /dev/null; then
-        print_info "Suricata服务已停止"
+        rm -f backend/frontend.pid
     else
-        print_error "无法停止Suricata服务，请手动终止进程"
+        print_warn "未找到前端服务PID文件，尝试查找并终止进程..."
+        # 尝试通过进程名查找并终止
+        pkill -f "react-scripts start"
+        pkill -f "node.*react-scripts start"
     fi
 }
 
@@ -56,99 +44,93 @@ stop_suricata() {
 stop_backend() {
     print_info "停止后端服务..."
     
-    # 使用PID文件停止
-    if [ -f "./pids/backend.pid" ]; then
-        PID=$(cat ./pids/backend.pid)
-        if ps -p $PID > /dev/null 2>&1; then
-            print_info "停止后端进程 PID: $PID"
+    if [ -f "backend/server.pid" ]; then
+        PID=$(cat backend/server.pid)
+        if ps -p $PID > /dev/null; then
             kill $PID
-            sleep 2
-            # 如果进程仍在运行，强制终止
-            if ps -p $PID > /dev/null 2>&1; then
-                print_warn "后端进程未响应，强制终止..."
-                kill -9 $PID
-            fi
+            print_info "后端服务已停止 (PID: $PID)"
+        else
+            print_warn "后端服务PID文件存在，但进程未运行"
         fi
-        rm -f ./pids/backend.pid
-    fi
-    
-    # 检查是否还有运行的Flask进程
-    if pgrep -f "python run.py" > /dev/null; then
-        print_warn "Flask进程仍在运行，尝试终止..."
-        pkill -f "python run.py"
-        sleep 1
-        if pgrep -f "python run.py" > /dev/null; then
-            print_warn "Flask进程未响应，强制终止..."
-            pkill -9 -f "python run.py"
-        fi
-    fi
-    
-    # 确认停止状态
-    if ! pgrep -f "python run.py" > /dev/null; then
-        print_info "后端服务已停止"
+        rm -f backend/server.pid
     else
-        print_error "无法停止后端服务，请手动终止进程"
+        print_warn "未找到后端服务PID文件，尝试查找并终止进程..."
+        # 尝试通过进程名查找并终止
+        pkill -f "python3 run.py"
     fi
 }
 
-# 停止前端服务
-stop_frontend() {
-    print_info "停止前端服务..."
+# 停止Suricata
+stop_suricata() {
+    print_info "停止Suricata..."
     
-    # 使用PID文件停止
-    if [ -f "./pids/frontend.pid" ]; then
-        PID=$(cat ./pids/frontend.pid)
-        if ps -p $PID > /dev/null 2>&1; then
-            print_info "停止前端进程 PID: $PID"
-            kill $PID
-            sleep 2
-            # 如果进程仍在运行，强制终止
-            if ps -p $PID > /dev/null 2>&1; then
-                print_warn "前端进程未响应，强制终止..."
-                kill -9 $PID
-            fi
+    # 检查Suricata是否运行
+    if pidof -x suricata >/dev/null; then
+        SURICATA_PID=$(pidof suricata)
+        print_info "尝试停止Suricata (PID: $SURICATA_PID)"
+        
+        # 使用sudo停止Suricata
+        sudo kill $SURICATA_PID
+        
+        # 等待进程终止
+        sleep 2
+        
+        # 检查是否成功停止
+        if pidof -x suricata >/dev/null; then
+            print_warn "Suricata未正常停止，尝试强制终止..."
+            sudo kill -9 $(pidof suricata)
+            sleep 1
         fi
-        rm -f ./pids/frontend.pid
-    fi
-    
-    # 检查是否还有运行的npm进程
-    if pgrep -f "react-scripts start" > /dev/null; then
-        print_warn "React进程仍在运行，尝试终止..."
-        pkill -f "react-scripts start"
-        sleep 1
-        if pgrep -f "react-scripts start" > /dev/null; then
-            print_warn "React进程未响应，强制终止..."
-            pkill -9 -f "react-scripts start"
+        
+        # 最终确认
+        if ! pidof -x suricata >/dev/null; then
+            print_info "Suricata已成功停止"
+        else
+            print_error "无法停止Suricata，请手动终止进程"
         fi
-    fi
-    
-    # 确认停止状态
-    if ! pgrep -f "react-scripts start" > /dev/null; then
-        print_info "前端服务已停止"
     else
-        print_error "无法停止前端服务，请手动终止进程"
+        print_info "Suricata未运行"
     fi
 }
 
-# 清理PID文件
-cleanup_pid_files() {
-    print_info "清理进程ID文件..."
-    rm -f ./pids/*.pid
+# 检查服务状态
+check_services() {
+    print_info "检查剩余服务..."
+    
+    # 检查前端服务
+    if pgrep -f "react-scripts start" > /dev/null || pgrep -f "node.*react-scripts start" > /dev/null; then
+        print_warn "发现前端服务仍在运行，强制终止..."
+        pkill -9 -f "react-scripts start"
+        pkill -9 -f "node.*react-scripts start"
+    fi
+    
+    # 检查后端服务
+    if pgrep -f "python3 run.py" > /dev/null; then
+        print_warn "发现后端服务仍在运行，强制终止..."
+        pkill -9 -f "python3 run.py"
+    fi
+    
+    # 检查Suricata
+    if pidof -x suricata >/dev/null; then
+        print_warn "发现Suricata仍在运行，强制终止..."
+        sudo pkill -9 -x suricata
+    fi
 }
 
 # 主函数
 main() {
-    print_info "开始停止NIDS系统..."
+    print_info "正在停止基于Suricata的网络入侵检测系统..."
     
-    # 停止各服务
+    # 停止服务
     stop_frontend
     stop_backend
     stop_suricata
     
-    # 清理PID文件
-    cleanup_pid_files
+    # 确认服务已停止
+    sleep 2
+    check_services
     
-    print_info "NIDS系统已完全停止"
+    print_info "所有服务已停止"
 }
 
 # 执行主函数

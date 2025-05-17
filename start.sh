@@ -19,61 +19,78 @@ print_error() {
     echo -e "${RED}[错误]${NC} $1"
 }
 
-# 检查运行状态的函数
-check_process() {
-    pgrep -f "$1" > /dev/null
-    return $?
+# 检查目录和文件
+check_requirements() {
+    print_info "检查系统环境..."
+    
+    # 检查后端目录
+    if [ ! -d "backend" ]; then
+        print_error "未找到backend目录，请确保在正确的项目根目录下运行此脚本"
+        exit 1
+    fi
+    
+    # 检查前端目录
+    if [ ! -d "frontend" ]; then
+        print_error "未找到frontend目录，请确保在正确的项目根目录下运行此脚本"
+        exit 1
+    fi
+    
+    # 检查环境变量文件
+    if [ ! -f "backend/.env" ]; then
+        print_error "未找到环境变量配置文件，请先运行install.sh脚本"
+        exit 1
+    fi
 }
 
-# 清理旧的进程ID文件
-cleanup_pid_files() {
-    mkdir -p ./pids
-    rm -f ./pids/*.pid
+# 确保PID目录存在
+ensure_pid_dir() {
+    if [ ! -d "backend/pids" ]; then
+        mkdir -p backend/pids
+    fi
 }
 
 # 启动Suricata
 start_suricata() {
-    print_info "启动Suricata服务..."
+    print_info "启动Suricata..."
     
-    # 检查.env文件
-    if [ ! -f "backend/.env" ]; then
-        print_error "未找到环境配置文件 backend/.env"
-        exit 1
+    # 获取配置的网络接口
+    INTERFACE=$(grep "INTERFACE=" backend/.env | cut -d '=' -f2)
+    
+    # 检查是否已启动
+    if pidof -x suricata >/dev/null; then
+        print_warn "Suricata已经在运行，跳过启动"
+        return
     fi
     
-    # 从.env文件加载配置
-    source <(grep -v '^#' backend/.env | sed -E 's/(.*)=(.*)/export \1="\2"/g')
-    
-    # 检查网络接口设置
-    if [ -z "$INTERFACE" ]; then
-        INTERFACE="ens33"
-        print_warn "未指定网络接口，使用默认接口: $INTERFACE"
-    fi
-    
-    # 检查Suricata配置文件
-    if [ ! -f "$SURICATA_CONFIG" ]; then
-        print_error "未找到Suricata配置文件: $SURICATA_CONFIG"
-        exit 1
-    fi
-    
-    # 删除过期的PID文件
+    # 检查并删除过时的PID文件
     if [ -f "/var/run/suricata.pid" ]; then
-        print_warn "发现过期的Suricata PID文件，正在删除..."
+        print_warn "发现过时的Suricata PID文件，尝试删除..."
         sudo rm -f /var/run/suricata.pid
     fi
     
-    # 启动Suricata
-    print_info "使用接口 $INTERFACE 启动Suricata..."
-    sudo pkill -f "suricata -c $SURICATA_CONFIG" > /dev/null 2>&1 || true
-    sudo suricata -c $SURICATA_CONFIG --af-packet=$INTERFACE -D
+    # 确保Suricata日志目录存在且有正确权限
+    if [ ! -d "/var/log/suricata" ]; then
+        print_info "创建Suricata日志目录..."
+        sudo mkdir -p /var/log/suricata
+    fi
+    sudo chmod 755 /var/log/suricata
+    sudo chown -R $(whoami):$(whoami) /var/log/suricata 2>/dev/null || true
+    
+    # 尝试启动Suricata
+    print_info "使用接口 ${INTERFACE:-ens33} 启动Suricata..."
+    sudo suricata -c /etc/suricata/suricata.yaml -i ${INTERFACE:-ens33} -D
+    
+    # 等待片刻让服务启动
+    sleep 2
     
     # 检查是否启动成功
-    sleep 2
-    if pgrep -f "suricata" > /dev/null; then
-        print_info "Suricata 服务已启动"
-        pgrep -f "suricata" > ./pids/suricata.pid
+    if pidof -x suricata >/dev/null; then
+        print_info "Suricata启动成功"
     else
-        print_error "Suricata 服务启动失败"
+        print_error "Suricata启动失败"
+        print_info "尝试检查Suricata配置文件是否有错误..."
+        sudo suricata -T -c /etc/suricata/suricata.yaml
+        print_error "请修复配置文件问题后再尝试启动"
         exit 1
     fi
 }
@@ -82,32 +99,32 @@ start_suricata() {
 start_backend() {
     print_info "启动后端服务..."
     
-    # 检查后端目录
-    if [ ! -d "backend" ]; then
-        print_error "未找到后端目录"
-        exit 1
+    # 检查是否已经在运行
+    if [ -f "backend/server.pid" ]; then
+        PID=$(cat backend/server.pid)
+        if ps -p $PID > /dev/null; then
+            print_warn "后端服务已经在运行 (PID: $PID)"
+            return
+        else
+            # 进程不存在但PID文件存在，删除PID文件
+            rm backend/server.pid
+        fi
     fi
     
-    # 检查Python虚拟环境
+    # 进入后端目录
     cd backend
-    if [ -d "venv" ]; then
-        source venv/bin/activate
-    fi
     
-    # 启动后端
-    nohup python3 run.py > ../logs/backend.log 2>&1 &
-    BACKEND_PID=$!
-    echo $BACKEND_PID > ../pids/backend.pid
+    # 启动Flask服务
+    print_info "以守护进程模式启动Flask服务..."
+    nohup python3 run.py > logs/backend.log 2>&1 &
     
-    # 检查是否启动成功
-    sleep 5
-    if ps -p $BACKEND_PID > /dev/null; then
-        print_info "后端服务已启动，PID: $BACKEND_PID"
-    else
-        print_error "后端服务启动失败"
-        exit 1
-    fi
+    # 保存PID
+    PID=$!
+    echo $PID > server.pid
     
+    print_info "后端服务已启动 (PID: $PID)"
+    
+    # 返回上级目录
     cd ..
 }
 
@@ -115,50 +132,105 @@ start_backend() {
 start_frontend() {
     print_info "启动前端服务..."
     
-    # 检查前端目录
-    if [ ! -d "frontend" ]; then
-        print_error "未找到前端目录"
-        exit 1
+    # 检查是否已经在运行
+    if [ -f "backend/frontend.pid" ]; then
+        PID=$(cat backend/frontend.pid)
+        if ps -p $PID > /dev/null; then
+            print_warn "前端服务已经在运行 (PID: $PID)"
+            return
+        else
+            # 进程不存在但PID文件存在，删除PID文件
+            rm backend/frontend.pid
+        fi
     fi
     
-    # 启动前端
+    # 进入前端目录
     cd frontend
-    nohup npm start > ../logs/frontend.log 2>&1 &
-    FRONTEND_PID=$!
-    echo $FRONTEND_PID > ../pids/frontend.pid
     
-    # 检查是否启动成功
-    sleep 5
-    if ps -p $FRONTEND_PID > /dev/null; then
-        print_info "前端服务已启动，PID: $FRONTEND_PID"
+    # 启动React开发服务器
+    print_info "以守护进程模式启动React开发服务器..."
+    nohup npm start > ../backend/logs/frontend.log 2>&1 &
+    
+    # 保存PID
+    PID=$!
+    echo $PID > ../backend/frontend.pid
+    
+    print_info "前端服务已启动 (PID: $PID)"
+    
+    # 返回上级目录
+    cd ..
+}
+
+# 检查服务状态
+check_services() {
+    print_info "检查服务状态..."
+    
+    # 检查后端服务
+    if [ -f "backend/server.pid" ]; then
+        PID=$(cat backend/server.pid)
+        if ps -p $PID > /dev/null; then
+            print_info "后端服务运行中 (PID: $PID)"
+        else
+            print_warn "后端服务PID文件存在，但进程未运行"
+        fi
     else
-        print_error "前端服务启动失败"
-        cat ../logs/frontend.log
-        exit 1
+        print_warn "后端服务未运行"
     fi
     
-    cd ..
+    # 检查前端服务
+    if [ -f "backend/frontend.pid" ]; then
+        PID=$(cat backend/frontend.pid)
+        if ps -p $PID > /dev/null; then
+            print_info "前端服务运行中 (PID: $PID)"
+        else
+            print_warn "前端服务PID文件存在，但进程未运行"
+        fi
+    else
+        print_warn "前端服务未运行"
+    fi
+    
+    # 检查Suricata
+    if pidof -x suricata >/dev/null; then
+        SURICATA_PID=$(pidof suricata)
+        print_info "Suricata运行中 (PID: $SURICATA_PID)"
+    else
+        print_warn "Suricata未运行"
+    fi
+}
+
+# 显示访问信息
+show_access_info() {
+    print_info "服务启动完成！"
+    echo ""
+    echo "==================================================="
+    echo "  后端API地址: http://localhost:5000/api"
+    echo "  前端Web界面: http://localhost:3000"
+    echo "==================================================="
+    echo ""
+    print_info "可以通过浏览器访问系统界面"
+    print_info "使用Ctrl+C停止前台进程，或运行./stop.sh脚本停止所有服务"
 }
 
 # 主函数
 main() {
-    print_info "开始启动NIDS系统..."
+    print_info "正在启动基于Suricata的网络入侵检测系统..."
     
-    # 创建日志目录
-    mkdir -p logs
-    # 清理旧的PID文件
-    cleanup_pid_files
+    # 检查环境
+    check_requirements
     
-    # 启动各服务
+    # 确保PID目录存在
+    ensure_pid_dir
+    
+    # 启动服务
     start_suricata
     start_backend
     start_frontend
     
-    print_info "NIDS系统启动完成！"
-    print_info "后端服务运行在: http://localhost:5000/"
-    print_info "前端服务运行在: http://localhost:3000/"
-    print_info "使用以下命令停止服务:"
-    print_info "  ./stop.sh"
+    # 检查服务状态
+    check_services
+    
+    # 显示访问信息
+    show_access_info
 }
 
 # 执行主函数

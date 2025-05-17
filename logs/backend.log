@@ -8,9 +8,36 @@
  * Running on http://192.168.101.29:5000/ (Press CTRL+C to quit)
  * Restarting with stat
  * Debugger is active!
- * Debugger PIN: 130-773-586
-127.0.0.1 - - [17/May/2025 19:03:22] "OPTIONS /api/auth/login HTTP/1.1" 200 -
-127.0.0.1 - - [17/May/2025 19:03:22] "[35m[1mPOST /api/auth/login HTTP/1.1[0m" 500 -
+ * Debugger PIN: 143-346-944
+ * Detected change in '/home/taoli/NIDS_ByTaoLi/backend/app/auth/routes.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 143-346-944
+ * Detected change in '/home/taoli/NIDS_ByTaoLi/backend/app/pcap/utils.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 143-346-944
+ * Detected change in '/home/taoli/NIDS_ByTaoLi/backend/app/pcap/routes.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 143-346-944
+ * Detected change in '/home/taoli/NIDS_ByTaoLi/backend/app/pcap/routes.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 143-346-944
+127.0.0.1 - - [17/May/2025 20:11:00] "OPTIONS /api/pcap/list?page=1&per_page=10 HTTP/1.1" 200 -
+127.0.0.1 - - [17/May/2025 20:11:00] "OPTIONS /api/pcap/list?page=1&per_page=10 HTTP/1.1" 200 -
+127.0.0.1 - - [17/May/2025 20:11:00] "GET /api/pcap/list?page=1&per_page=10 HTTP/1.1" 200 -
+127.0.0.1 - - [17/May/2025 20:11:00] "GET /api/pcap/list?page=1&per_page=10 HTTP/1.1" 200 -
+127.0.0.1 - - [17/May/2025 20:12:55] "OPTIONS /api/auth/login HTTP/1.1" 200 -
+127.0.0.1 - - [17/May/2025 20:12:55] "POST /api/auth/login HTTP/1.1" 200 -
+127.0.0.1 - - [17/May/2025 20:12:55] "OPTIONS /api/monitor/alerts/summary HTTP/1.1" 200 -
+127.0.0.1 - - [17/May/2025 20:12:55] "OPTIONS /api/monitor/alerts/summary HTTP/1.1" 200 -
+127.0.0.1 - - [17/May/2025 20:12:55] "GET /api/monitor/alerts/summary HTTP/1.1" 200 -
+127.0.0.1 - - [17/May/2025 20:12:55] "GET /api/monitor/alerts/summary HTTP/1.1" 200 -
+127.0.0.1 - - [17/May/2025 20:12:55] "OPTIONS /api/monitor/alerts?page=1&per_page=10 HTTP/1.1" 200 -
+127.0.0.1 - - [17/May/2025 20:12:55] "OPTIONS /api/monitor/alerts?page=1&per_page=10 HTTP/1.1" 200 -
+127.0.0.1 - - [17/May/2025 20:12:55] "[35m[1mGET /api/monitor/alerts?page=1&per_page=10 HTTP/1.1[0m" 500 -
 Traceback (most recent call last):
   File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask/app.py", line 2088, in __call__
     return self.wsgi_app(environ, start_response)
@@ -28,16 +55,12 @@ Traceback (most recent call last):
     rv = self.dispatch_request()
   File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask/app.py", line 1499, in dispatch_request
     return self.ensure_sync(self.view_functions[rule.endpoint])(**req.view_args)
-  File "/home/taoli/NIDS_ByTaoLi/backend/app/auth/routes.py", line 64, in login
-    if not user or not user.check_password(data['password']):
-  File "/home/taoli/NIDS_ByTaoLi/backend/app/models/user.py", line 30, in check_password
-    return bcrypt.checkpw(password.encode('utf-8'), self.password_hash.encode('utf-8'))
-  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/bcrypt/__init__.py", line 127, in checkpw
-    ret = hashpw(password, hashed_password)
-  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/bcrypt/__init__.py", line 105, in hashpw
-    raise ValueError("Invalid salt")
-ValueError: Invalid salt
-127.0.0.1 - - [17/May/2025 19:03:25] "[35m[1mPOST /api/auth/login HTTP/1.1[0m" 500 -
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask_jwt_extended/view_decorators.py", line 127, in decorator
+    return current_app.ensure_sync(fn)(*args, **kwargs)
+  File "/home/taoli/NIDS_ByTaoLi/backend/app/monitor/routes.py", line 194, in get_alerts
+    page = request.args.get('page', 1, type=int)
+NameError: name 'request' is not defined
+127.0.0.1 - - [17/May/2025 20:12:55] "[35m[1mGET /api/monitor/alerts?page=1&per_page=10 HTTP/1.1[0m" 500 -
 Traceback (most recent call last):
   File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask/app.py", line 2088, in __call__
     return self.wsgi_app(environ, start_response)
@@ -55,28 +78,202 @@ Traceback (most recent call last):
     rv = self.dispatch_request()
   File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask/app.py", line 1499, in dispatch_request
     return self.ensure_sync(self.view_functions[rule.endpoint])(**req.view_args)
-  File "/home/taoli/NIDS_ByTaoLi/backend/app/auth/routes.py", line 64, in login
-    if not user or not user.check_password(data['password']):
-  File "/home/taoli/NIDS_ByTaoLi/backend/app/models/user.py", line 30, in check_password
-    return bcrypt.checkpw(password.encode('utf-8'), self.password_hash.encode('utf-8'))
-  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/bcrypt/__init__.py", line 127, in checkpw
-    ret = hashpw(password, hashed_password)
-  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/bcrypt/__init__.py", line 105, in hashpw
-    raise ValueError("Invalid salt")
-ValueError: Invalid salt
- * Detected change in '/home/taoli/NIDS_ByTaoLi/backend/app/models/user.py', reloading
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask_jwt_extended/view_decorators.py", line 127, in decorator
+    return current_app.ensure_sync(fn)(*args, **kwargs)
+  File "/home/taoli/NIDS_ByTaoLi/backend/app/monitor/routes.py", line 194, in get_alerts
+    page = request.args.get('page', 1, type=int)
+NameError: name 'request' is not defined
+127.0.0.1 - - [17/May/2025 20:12:57] "OPTIONS /api/monitor/status HTTP/1.1" 200 -
+127.0.0.1 - - [17/May/2025 20:12:57] "OPTIONS /api/monitor/alerts?page=1&per_page=10 HTTP/1.1" 200 -
+127.0.0.1 - - [17/May/2025 20:12:57] "OPTIONS /api/monitor/alerts?page=1&per_page=10 HTTP/1.1" 200 -
+127.0.0.1 - - [17/May/2025 20:12:57] "[33mGET /socket.io/?EIO=4&transport=websocket HTTP/1.1[0m" 404 -
+127.0.0.1 - - [17/May/2025 20:12:57] "OPTIONS /api/monitor/status HTTP/1.1" 200 -
+127.0.0.1 - - [17/May/2025 20:12:57] "GET /api/monitor/status HTTP/1.1" 200 -
+127.0.0.1 - - [17/May/2025 20:12:57] "GET /api/monitor/status HTTP/1.1" 200 -
+127.0.0.1 - - [17/May/2025 20:12:57] "[35m[1mGET /api/monitor/alerts?page=1&per_page=10 HTTP/1.1[0m" 500 -
+Traceback (most recent call last):
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask/app.py", line 2088, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask/app.py", line 2073, in wsgi_app
+    response = self.handle_exception(e)
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask/app.py", line 2070, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask/app.py", line 1515, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask/app.py", line 1513, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask/app.py", line 1499, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**req.view_args)
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask_jwt_extended/view_decorators.py", line 127, in decorator
+    return current_app.ensure_sync(fn)(*args, **kwargs)
+  File "/home/taoli/NIDS_ByTaoLi/backend/app/monitor/routes.py", line 194, in get_alerts
+    page = request.args.get('page', 1, type=int)
+NameError: name 'request' is not defined
+127.0.0.1 - - [17/May/2025 20:12:57] "[35m[1mGET /api/monitor/alerts?page=1&per_page=10 HTTP/1.1[0m" 500 -
+Traceback (most recent call last):
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask/app.py", line 2088, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask/app.py", line 2073, in wsgi_app
+    response = self.handle_exception(e)
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask/app.py", line 2070, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask/app.py", line 1515, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask/app.py", line 1513, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask/app.py", line 1499, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**req.view_args)
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask_jwt_extended/view_decorators.py", line 127, in decorator
+    return current_app.ensure_sync(fn)(*args, **kwargs)
+  File "/home/taoli/NIDS_ByTaoLi/backend/app/monitor/routes.py", line 194, in get_alerts
+    page = request.args.get('page', 1, type=int)
+NameError: name 'request' is not defined
+127.0.0.1 - - [17/May/2025 20:12:58] "OPTIONS /api/pcap/list?page=1&per_page=10 HTTP/1.1" 200 -
+127.0.0.1 - - [17/May/2025 20:12:58] "OPTIONS /api/pcap/list?page=1&per_page=10 HTTP/1.1" 200 -
+127.0.0.1 - - [17/May/2025 20:12:58] "GET /api/pcap/list?page=1&per_page=10 HTTP/1.1" 200 -
+127.0.0.1 - - [17/May/2025 20:12:58] "GET /api/pcap/list?page=1&per_page=10 HTTP/1.1" 200 -
+127.0.0.1 - - [17/May/2025 20:13:01] "OPTIONS /api/pcap/upload HTTP/1.1" 200 -
+[2025-05-17 20:13:01,123] INFO in routes: PCAP文件已保存: /home/taoli/NIDS_ByTaoLi/backend/uploads/99dcf203-9c11-423f-ab01-2d42f9d55344_wifi.pcap
+[2025-05-17 20:13:01,125] INFO in routes: 开始分析PCAP文件: /home/taoli/NIDS_ByTaoLi/backend/uploads/99dcf203-9c11-423f-ab01-2d42f9d55344_wifi.pcap, 输出目录: /home/taoli/NIDS_ByTaoLi/backend/uploads/temp/99dcf203-9c11-423f-ab01-2d42f9d55344
+[2025-05-17 20:13:01,210] ERROR in routes: PCAP格式不兼容: PCAP文件包含Suricata不支持的数据链路类型，请使用标准的以太网捕获格式
+[2025-05-17 20:13:01,210] ERROR in routes: Suricata分析失败: PCAP文件包含Suricata不支持的数据链路类型，请使用标准的以太网捕获格式。自动转换尝试失败: 输入文件不存在: /home/taoli/NIDS_ByTaoLi/backend/uploads/99dcf203-9c11-423f-ab01-2d42f9d55344_wifi.pcap
+127.0.0.1 - - [17/May/2025 20:13:01] "[35m[1mPOST /api/pcap/upload HTTP/1.1[0m" 500 -
+ * Detected change in '/home/taoli/NIDS_ByTaoLi/backend/app/pcap/utils.py', reloading
  * Restarting with stat
  * Debugger is active!
- * Debugger PIN: 130-773-586
- * Detected change in '/home/taoli/NIDS_ByTaoLi/backend/reset_db.py', reloading
+ * Debugger PIN: 143-346-944
+ * Detected change in '/home/taoli/NIDS_ByTaoLi/backend/app/__init__.py', reloading
  * Restarting with stat
+[2025-05-17 20:14:35,683] INFO in __init__: 应用已启动
+[2025-05-17 20:14:35,683] INFO in __init__: 应用已启动
  * Debugger is active!
- * Debugger PIN: 130-773-586
- * Detected change in '/home/taoli/NIDS_ByTaoLi/backend/reset_db.py', reloading
+ * Debugger PIN: 143-346-944
+ * Detected change in '/home/taoli/NIDS_ByTaoLi/backend/app/pcap/utils.py', reloading
  * Restarting with stat
+[2025-05-17 20:14:43,049] INFO in __init__: 应用已启动
+[2025-05-17 20:14:43,049] INFO in __init__: 应用已启动
  * Debugger is active!
- * Debugger PIN: 130-773-586
- * Detected change in '/home/taoli/NIDS_ByTaoLi/backend/reset_db.py', reloading
+ * Debugger PIN: 143-346-944
+ * Detected change in '/home/taoli/NIDS_ByTaoLi/backend/app/pcap/routes.py', reloading
  * Restarting with stat
+[2025-05-17 20:15:07,504] INFO in __init__: 应用已启动
+[2025-05-17 20:15:07,504] INFO in __init__: 应用已启动
  * Debugger is active!
- * Debugger PIN: 130-773-586
+ * Debugger PIN: 143-346-944
+127.0.0.1 - - [17/May/2025 20:15:32] "OPTIONS /api/pcap/list?page=1&per_page=10 HTTP/1.1" 200 -
+127.0.0.1 - - [17/May/2025 20:15:32] "OPTIONS /api/pcap/list?page=1&per_page=10 HTTP/1.1" 200 -
+127.0.0.1 - - [17/May/2025 20:15:33] "GET /api/pcap/list?page=1&per_page=10 HTTP/1.1" 200 -
+127.0.0.1 - - [17/May/2025 20:15:33] "GET /api/pcap/list?page=1&per_page=10 HTTP/1.1" 200 -
+127.0.0.1 - - [17/May/2025 20:17:42] "OPTIONS /api/auth/login HTTP/1.1" 200 -
+127.0.0.1 - - [17/May/2025 20:17:43] "POST /api/auth/login HTTP/1.1" 200 -
+127.0.0.1 - - [17/May/2025 20:17:43] "OPTIONS /api/monitor/alerts/summary HTTP/1.1" 200 -
+127.0.0.1 - - [17/May/2025 20:17:43] "OPTIONS /api/monitor/alerts/summary HTTP/1.1" 200 -
+127.0.0.1 - - [17/May/2025 20:17:43] "GET /api/monitor/alerts/summary HTTP/1.1" 200 -
+127.0.0.1 - - [17/May/2025 20:17:43] "GET /api/monitor/alerts/summary HTTP/1.1" 200 -
+127.0.0.1 - - [17/May/2025 20:17:43] "OPTIONS /api/monitor/alerts?page=1&per_page=10 HTTP/1.1" 200 -
+127.0.0.1 - - [17/May/2025 20:17:43] "[35m[1mGET /api/monitor/alerts?page=1&per_page=10 HTTP/1.1[0m" 500 -
+127.0.0.1 - - [17/May/2025 20:17:43] "OPTIONS /api/monitor/alerts?page=1&per_page=10 HTTP/1.1" 200 -
+Traceback (most recent call last):
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask/app.py", line 2088, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask/app.py", line 2073, in wsgi_app
+    response = self.handle_exception(e)
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask/app.py", line 2070, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask/app.py", line 1515, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask/app.py", line 1513, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask/app.py", line 1499, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**req.view_args)
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask_jwt_extended/view_decorators.py", line 127, in decorator
+    return current_app.ensure_sync(fn)(*args, **kwargs)
+  File "/home/taoli/NIDS_ByTaoLi/backend/app/monitor/routes.py", line 194, in get_alerts
+    page = request.args.get('page', 1, type=int)
+NameError: name 'request' is not defined
+127.0.0.1 - - [17/May/2025 20:17:43] "[35m[1mGET /api/monitor/alerts?page=1&per_page=10 HTTP/1.1[0m" 500 -
+Traceback (most recent call last):
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask/app.py", line 2088, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask/app.py", line 2073, in wsgi_app
+    response = self.handle_exception(e)
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask/app.py", line 2070, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask/app.py", line 1515, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask/app.py", line 1513, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask/app.py", line 1499, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**req.view_args)
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask_jwt_extended/view_decorators.py", line 127, in decorator
+    return current_app.ensure_sync(fn)(*args, **kwargs)
+  File "/home/taoli/NIDS_ByTaoLi/backend/app/monitor/routes.py", line 194, in get_alerts
+    page = request.args.get('page', 1, type=int)
+NameError: name 'request' is not defined
+127.0.0.1 - - [17/May/2025 20:17:44] "OPTIONS /api/pcap/list?page=1&per_page=10 HTTP/1.1" 200 -
+127.0.0.1 - - [17/May/2025 20:17:44] "OPTIONS /api/pcap/list?page=1&per_page=10 HTTP/1.1" 200 -
+127.0.0.1 - - [17/May/2025 20:17:44] "GET /api/pcap/list?page=1&per_page=10 HTTP/1.1" 200 -
+127.0.0.1 - - [17/May/2025 20:17:44] "GET /api/pcap/list?page=1&per_page=10 HTTP/1.1" 200 -
+127.0.0.1 - - [17/May/2025 20:17:59] "OPTIONS /api/pcap/upload HTTP/1.1" 200 -
+[2025-05-17 20:17:59,604] INFO in routes: 上传目录: /home/taoli/NIDS_ByTaoLi/backend/uploads
+[2025-05-17 20:17:59,604] INFO in routes: 上传目录: /home/taoli/NIDS_ByTaoLi/backend/uploads
+[2025-05-17 20:17:59,604] INFO in routes: 保存PCAP文件: /home/taoli/NIDS_ByTaoLi/backend/uploads/57dc6125-0e7f-44f8-a077-97c66e5f797c_wifi-dec.pcap
+[2025-05-17 20:17:59,604] INFO in routes: 保存PCAP文件: /home/taoli/NIDS_ByTaoLi/backend/uploads/57dc6125-0e7f-44f8-a077-97c66e5f797c_wifi-dec.pcap
+[2025-05-17 20:17:59,605] INFO in routes: PCAP文件已保存: /home/taoli/NIDS_ByTaoLi/backend/uploads/57dc6125-0e7f-44f8-a077-97c66e5f797c_wifi-dec.pcap, 大小: 65697 字节
+[2025-05-17 20:17:59,605] INFO in routes: PCAP文件已保存: /home/taoli/NIDS_ByTaoLi/backend/uploads/57dc6125-0e7f-44f8-a077-97c66e5f797c_wifi-dec.pcap, 大小: 65697 字节
+[2025-05-17 20:17:59,606] INFO in routes: 已创建分析输出目录: /home/taoli/NIDS_ByTaoLi/backend/uploads/temp/57dc6125-0e7f-44f8-a077-97c66e5f797c
+[2025-05-17 20:17:59,606] INFO in routes: 已创建分析输出目录: /home/taoli/NIDS_ByTaoLi/backend/uploads/temp/57dc6125-0e7f-44f8-a077-97c66e5f797c
+[2025-05-17 20:17:59,606] INFO in routes: 开始分析PCAP文件: /home/taoli/NIDS_ByTaoLi/backend/uploads/57dc6125-0e7f-44f8-a077-97c66e5f797c_wifi-dec.pcap, 输出目录: /home/taoli/NIDS_ByTaoLi/backend/uploads/temp/57dc6125-0e7f-44f8-a077-97c66e5f797c
+[2025-05-17 20:17:59,606] INFO in routes: 开始分析PCAP文件: /home/taoli/NIDS_ByTaoLi/backend/uploads/57dc6125-0e7f-44f8-a077-97c66e5f797c_wifi-dec.pcap, 输出目录: /home/taoli/NIDS_ByTaoLi/backend/uploads/temp/57dc6125-0e7f-44f8-a077-97c66e5f797c
+[2025-05-17 20:17:59,607] INFO in utils: 检查PCAP文件格式: /home/taoli/NIDS_ByTaoLi/backend/uploads/57dc6125-0e7f-44f8-a077-97c66e5f797c_wifi-dec.pcap
+[2025-05-17 20:17:59,607] INFO in utils: 检查PCAP文件格式: /home/taoli/NIDS_ByTaoLi/backend/uploads/57dc6125-0e7f-44f8-a077-97c66e5f797c_wifi-dec.pcap
+[2025-05-17 20:17:59,607] INFO in utils: 检查PCAP文件格式: /home/taoli/NIDS_ByTaoLi/backend/uploads/57dc6125-0e7f-44f8-a077-97c66e5f797c_wifi-dec.pcap
+[2025-05-17 20:17:59,709] ERROR in routes: Suricata分析失败: Error: suricata: pcap file '/home/taoli/NIDS_ByTaoLi/backend/uploads/57dc6125-0e7f-44f8-a077-97c66e5f797c_wifi-dec.pcap': No such file or directory
+
+[2025-05-17 20:17:59,709] ERROR in routes: Suricata分析失败: Error: suricata: pcap file '/home/taoli/NIDS_ByTaoLi/backend/uploads/57dc6125-0e7f-44f8-a077-97c66e5f797c_wifi-dec.pcap': No such file or directory
+
+[2025-05-17 20:17:59,709] ERROR in routes: Suricata分析失败: Suricata分析失败: Error: suricata: pcap file '/home/taoli/NIDS_ByTaoLi/backend/uploads/57dc6125-0e7f-44f8-a077-97c66e5f797c_wifi-dec.pcap': No such file or directory
+
+[2025-05-17 20:17:59,709] ERROR in routes: Suricata分析失败: Suricata分析失败: Error: suricata: pcap file '/home/taoli/NIDS_ByTaoLi/backend/uploads/57dc6125-0e7f-44f8-a077-97c66e5f797c_wifi-dec.pcap': No such file or directory
+
+127.0.0.1 - - [17/May/2025 20:17:59] "[35m[1mPOST /api/pcap/upload HTTP/1.1[0m" 500 -
+ * Detected change in '/home/taoli/NIDS_ByTaoLi/backend/app/pcap/routes.py', reloading
+ * Restarting with stat
+[2025-05-17 20:19:55,362] INFO in __init__: 应用已启动
+[2025-05-17 20:19:55,362] INFO in __init__: 应用已启动
+ * Debugger is active!
+ * Debugger PIN: 143-346-944
+ * Detected change in '/home/taoli/NIDS_ByTaoLi/backend/app/pcap/utils.py', reloading
+ * Restarting with stat
+[2025-05-17 20:20:21,800] INFO in __init__: 应用已启动
+[2025-05-17 20:20:21,800] INFO in __init__: 应用已启动
+ * Debugger is active!
+ * Debugger PIN: 143-346-944
+ * Detected change in '/home/taoli/NIDS_ByTaoLi/backend/app/pcap/utils.py', reloading
+ * Restarting with stat
+[2025-05-17 20:20:30,145] INFO in __init__: 应用已启动
+[2025-05-17 20:20:30,145] INFO in __init__: 应用已启动
+ * Debugger is active!
+ * Debugger PIN: 143-346-944
+ * Detected change in '/home/taoli/NIDS_ByTaoLi/backend/app/pcap/routes.py', reloading
+ * Restarting with stat
+[2025-05-17 20:21:03,633] INFO in __init__: 应用已启动
+[2025-05-17 20:21:03,633] INFO in __init__: 应用已启动
+ * Debugger is active!
+ * Debugger PIN: 143-346-944

@@ -38,7 +38,9 @@ class Alert(db.Model):
             'id': self.id,
             'timestamp': self.timestamp.isoformat() if self.timestamp else None,
             'alert_action': self.alert_action,
+            'alert_gid': self.alert_gid,
             'alert_signature_id': self.alert_signature_id,
+            'alert_rev': self.alert_rev,
             'alert_signature': self.alert_signature,
             'alert_category': self.alert_category,
             'alert_severity': self.alert_severity,
@@ -48,7 +50,8 @@ class Alert(db.Model):
             'dest_port': self.dest_port,
             'proto': self.proto,
             'app_proto': self.app_proto,
-            'pcap_filename': self.pcap_filename
+            'pcap_filename': self.pcap_filename,
+            'payload': self.payload
         }
     
     def __repr__(self):
