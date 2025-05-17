@@ -1,0 +1,69 @@
+Metadata-Version: 2.4
+Name: pysuricata
+Version: 0.0.4
+Summary: A lightweight EDA tool inspired by the curious nature of suricates. Built just for fun 🔬.
+Author-email: Alvaro Diez <alvarodiez20@gmail.com>
+License-Expression: MIT
+Project-URL: Repository, https://github.com/alvarodiez20/suricata
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: pandas
+Provides-Extra: notebooks
+Requires-Dist: ipykernel; extra == "notebooks"
+Provides-Extra: dask
+Requires-Dist: dask; extra == "dask"
+Provides-Extra: polars
+Requires-Dist: polars>=1.26.0; extra == "polars"
+Requires-Dist: pyarrow>=19.0.1; extra == "polars"
+Dynamic: license-file
+
+# `pysuricata`
+[![Build Status](https://github.com/alvarodiez20/pysuricata/workflows/CI/badge.svg)](https://github.com/alvarodiez20/pysuricata/actions)
+[![PyPI version](https://img.shields.io/pypi/v/pysuricata.svg)](https://pypi.org/project/pysuricata/)
+[![versions](https://img.shields.io/pypi/pyversions/pysuricata.svg)](https://github.com/alvarodiez20/pysuricata)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+<div align="center">
+  <img src="https://raw.githubusercontent.com/alvarodiez20/pysuricata/main/pysuricata/static/images/logo.png" alt="pysuricata Logo" width="300">
+</div>
+
+`pysuricata` is a lightweight Python library for exploratory data analysis (EDA) that supports multiple data formats—Pandas, Dask, and Polars DataFrames. It generates self-contained HTML reports featuring summary statistics, missing values, and correlation matrices with a clean, modern design. 
+
+
+## Installation
+
+Install `pysuricata` directly from PyPI:
+
+```bash
+pip install pysuricata
+```
+
+## Quick Example
+
+The following example demonstrates how to generate an EDA report using the Iris dataset with Pandas:
+
+
+```python
+import pandas as pd
+from pysuricata import generate_report
+from IPython.display import HTML
+
+# Load the Iris dataset directly using Pandas
+iris_url = "https://raw.githubusercontent.com/mwaskom/seaborn-data/master/iris.csv"
+iris_df = pd.read_csv(iris_url)
+
+# Generate the HTML EDA report and save it to a file
+html_report = generate_report(iris_df, output_file="iris_report.html")
+
+# Display the report in a Jupyter Notebook
+HTML(html_report)
+```

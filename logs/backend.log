@@ -1,0 +1,82 @@
+ * Serving Flask app 'app' (lazy loading)
+ * Environment: production
+   WARNING: This is a development server. Do not use it in a production deployment.
+   Use a production WSGI server instead.
+ * Debug mode: on
+ * Running on all addresses.
+   WARNING: This is a development server. Do not use it in a production deployment.
+ * Running on http://192.168.101.29:5000/ (Press CTRL+C to quit)
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 130-773-586
+127.0.0.1 - - [17/May/2025 19:03:22] "OPTIONS /api/auth/login HTTP/1.1" 200 -
+127.0.0.1 - - [17/May/2025 19:03:22] "[35m[1mPOST /api/auth/login HTTP/1.1[0m" 500 -
+Traceback (most recent call last):
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask/app.py", line 2088, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask/app.py", line 2073, in wsgi_app
+    response = self.handle_exception(e)
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask/app.py", line 2070, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask/app.py", line 1515, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask/app.py", line 1513, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask/app.py", line 1499, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**req.view_args)
+  File "/home/taoli/NIDS_ByTaoLi/backend/app/auth/routes.py", line 64, in login
+    if not user or not user.check_password(data['password']):
+  File "/home/taoli/NIDS_ByTaoLi/backend/app/models/user.py", line 30, in check_password
+    return bcrypt.checkpw(password.encode('utf-8'), self.password_hash.encode('utf-8'))
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/bcrypt/__init__.py", line 127, in checkpw
+    ret = hashpw(password, hashed_password)
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/bcrypt/__init__.py", line 105, in hashpw
+    raise ValueError("Invalid salt")
+ValueError: Invalid salt
+127.0.0.1 - - [17/May/2025 19:03:25] "[35m[1mPOST /api/auth/login HTTP/1.1[0m" 500 -
+Traceback (most recent call last):
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask/app.py", line 2088, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask/app.py", line 2073, in wsgi_app
+    response = self.handle_exception(e)
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask/app.py", line 2070, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask/app.py", line 1515, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask/app.py", line 1513, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/flask/app.py", line 1499, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**req.view_args)
+  File "/home/taoli/NIDS_ByTaoLi/backend/app/auth/routes.py", line 64, in login
+    if not user or not user.check_password(data['password']):
+  File "/home/taoli/NIDS_ByTaoLi/backend/app/models/user.py", line 30, in check_password
+    return bcrypt.checkpw(password.encode('utf-8'), self.password_hash.encode('utf-8'))
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/bcrypt/__init__.py", line 127, in checkpw
+    ret = hashpw(password, hashed_password)
+  File "/home/taoli/NIDS_ByTaoLi/backend/venv/lib/python3.10/site-packages/bcrypt/__init__.py", line 105, in hashpw
+    raise ValueError("Invalid salt")
+ValueError: Invalid salt
+ * Detected change in '/home/taoli/NIDS_ByTaoLi/backend/app/models/user.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 130-773-586
+ * Detected change in '/home/taoli/NIDS_ByTaoLi/backend/reset_db.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 130-773-586
+ * Detected change in '/home/taoli/NIDS_ByTaoLi/backend/reset_db.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 130-773-586
+ * Detected change in '/home/taoli/NIDS_ByTaoLi/backend/reset_db.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 130-773-586
